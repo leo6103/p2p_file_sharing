@@ -1,0 +1,124 @@
+[
+    {
+        "action": "signup",
+        "data": {
+            "username": "admin",
+            "password": "admin"
+        }
+    },
+    {
+        "result": 100,
+        "message": "Login successfully"
+    },
+    {
+        "result": 101,
+        "message": "Invalid username or password"
+    },
+
+
+    {
+        "action": "login",
+        "data": {
+            "username": "admin",
+            "password": "admin",
+            "downloadingPort": 8080
+        }
+    },
+    {
+        "result": 200,
+        "message": "Login successfully"
+    },
+    {
+        "result": 201,
+        "message": "Login successfully"
+    },
+    {
+        "result": 202,
+        "message": "Your session is expired! Please login"
+    },
+
+
+    {
+        "action": "browse",
+        "data": {
+            "filename": "a"
+        }
+    },
+    {
+        "result": 300,
+        "message": "Browse successfully",
+        "data": {
+            "files": [
+                {
+                    "name": "a",
+                    "file_path": "/test/a.txt",
+                    "username": "leo",
+                    "ip": "127.0.0.1",
+                    "port": 8080
+                },
+                {
+                    "name": "b",
+                    "file_path": "/test/b.txt",
+                    "username": "leo",
+                    "ip": "127.0.0.1",
+                    "port": 8080
+                },
+                {
+                    "name": "c",
+                    "file_path": "/test/c.txt",
+                    "username": "leo",
+                    "ip": "127.0.0.1",
+                    "port": 8080
+                }
+            ]
+        }
+    },
+
+
+    {
+        "action": "publish",
+        "data": {
+            "filename": "a",
+            "filepath": "/home/leo/a.txt"
+        }
+    },
+    {
+        "result": 400,
+        "message": "File published"
+    },
+
+
+    {
+        "action": "report_error",
+        "data": {
+            "username": "leo",
+            "filepath": "/home/leo/a.txt"
+        }
+    },
+    {
+        "result": 500,
+        "message": "Updated file catalog"
+    },
+    {
+        "result": 501,
+        "message": "File path not found in server"
+    },
+
+
+    {
+        "action": "cancel_publish",
+        "data": {
+            "filepath": "/home/leo/a.txt"
+        }
+    },
+    {
+        "result": 600,
+        "message": "Cancel successfully"
+    },
+    {
+        "result": 601,
+        "message": "File path not found"
+    }
+
+
+]
