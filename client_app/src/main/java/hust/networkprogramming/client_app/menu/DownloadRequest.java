@@ -1,6 +1,5 @@
 package hust.networkprogramming.client_app.menu;
 
-import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import hust.networkprogramming.shared_utils.message.RequestMessage;
 import hust.networkprogramming.shared_utils.message.ResponseMessage;
@@ -8,9 +7,13 @@ import hust.networkprogramming.shared_utils.net.SocketHandler;
 
 import java.io.*;
 import java.net.Socket;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Scanner;
 
 public class DownloadRequest {
+
+    // Method to handle metadata downloading (file information)
     public static void downloadMetaData() throws IOException {
         Scanner scanner = new Scanner(System.in);
 
@@ -22,6 +25,9 @@ public class DownloadRequest {
 
         System.out.print("Enter file path: ");
         String filePath = scanner.nextLine();
+
+        // Get download folder from user and ensure it's valid
+        String downloadFolder = getDownloadFolder(scanner);
 
         JsonObject data = new JsonObject();
         data.addProperty("filepath", filePath);
@@ -39,7 +45,10 @@ public class DownloadRequest {
             if (result == ResponseMessage.DOWNLOAD_FILE_FOUND_CODE) {
                 long filesize = responseMessage.getData().get("filesize").getAsLong();
                 String filepath = responseMessage.getData().get("filepath").getAsString();
-                downloadFile(socket, filesize, "/home/leo/Downloads/test.jpg");
+
+                String filename = new File(filepath).getName();
+
+                downloadFile(socket, filesize, downloadFolder, filename);
             } else {
                 System.out.println("File not found");
             }
@@ -49,8 +58,25 @@ public class DownloadRequest {
         }
     }
 
-    public static void downloadFile(Socket socket, long filesize, String filepath) throws IOException {
-        File outputFile = new File(filepath);
+    // Method to get valid download folder from user
+    private static String getDownloadFolder(Scanner scanner) {
+        String folderPath;
+        while (true) {
+            System.out.print("Enter download folder (e.g. /home/leo/Downloads/): ");
+            folderPath = scanner.nextLine();
+            File folder = new File(folderPath);
+            if (folder.exists() && folder.isDirectory()) {
+                break; // Valid folder path
+            } else {
+                System.out.println("Invalid folder path. Please enter a valid directory.");
+            }
+        }
+        return folderPath;
+    }
+
+    // Method to handle file downloading with progress bar
+    public static void downloadFile(Socket socket, long filesize, String downloadFolder, String filename) throws IOException {
+        File outputFile = new File(downloadFolder, filename);
         try (BufferedOutputStream fileOutputStream = new BufferedOutputStream(new FileOutputStream(outputFile));
              DataInputStream inputStream = new DataInputStream(socket.getInputStream())) {
 
