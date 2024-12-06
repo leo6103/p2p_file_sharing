@@ -8,9 +8,10 @@ import hust.networkprogramming.shared_utils.net.SocketHandler;
 
 import java.io.IOException;
 import java.net.Socket;
+import java.sql.SQLException;
 
 public class PublishController {
-    public static void publish(Socket socket, JsonObject data) throws IOException {
+    public static void publish(Socket socket, JsonObject data) throws IOException, SQLException {
         String name = data.get("filename").getAsString();
         String filePath = data.get("filepath").getAsString();
         String username = data.get("username").getAsString();
@@ -27,7 +28,7 @@ public class PublishController {
         }
     }
 
-    public static void cancel(Socket socket, JsonObject data) throws IOException {
+    public static void cancel(Socket socket, JsonObject data) throws IOException, SQLException {
         String name = data.get("filename").getAsString();
         String filePath = data.get("filepath").getAsString();
         String username = data.get("username").getAsString();

@@ -53,7 +53,7 @@ public class SessionService {
         String newCookie = UUID.randomUUID().toString();
         String expiryDate = String.valueOf(System.currentTimeMillis() + EXPIRY_TIME); // 1 hour expiry
 
-        int userId = getUserId(username);
+        int userId = UserService.getUserId(username);
 
         String insertSQL = "INSERT INTO sessions (cookie, expiry_date, user_id) VALUES (?, ?, ?)";
         try (Connection connection = DatabaseManager.getConnection();
@@ -69,23 +69,6 @@ public class SessionService {
         }
 
         return newCookie;
-    }
-
-    private static int getUserId(String username) throws SQLException {
-        String userIdSQL = "SELECT id FROM users WHERE username = ?";
-        try (Connection connection = DatabaseManager.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(userIdSQL)) {
-            preparedStatement.setString(1, username);
-            ResultSet resultSet = preparedStatement.executeQuery();
-            if (resultSet.next()) {
-                return resultSet.getInt("id");
-            }
-            throw new SQLException("User not found: " + username);
-        } catch (SQLException e) {
-            System.out.println("Error fetching user ID for username: " + username);
-            e.printStackTrace();
-            throw e;
-        }
     }
 
     public static boolean isCookieValid(String username, String cookie) {

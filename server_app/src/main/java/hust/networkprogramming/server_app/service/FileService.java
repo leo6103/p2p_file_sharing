@@ -7,13 +7,15 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
 public class FileService {
-    public static boolean insertFile(String name, String filePath, String username) {
-        String sql = "INSERT INTO files (name, file_path, user_id) VALUES (?, ?, 1)";
+    public static boolean insertFile(String name, String filePath, String username) throws SQLException {
+        int userId = UserService.getUserId(username);
+        String sql = "INSERT INTO files (name, file_path, user_id) VALUES (?, ?, ?)";
 
         try (Connection conn = DatabaseManager.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setString(1, name);
             pstmt.setString(2, filePath);
+            pstmt.setInt(3, userId);
 
             int rowsAffected = pstmt.executeUpdate();
             return rowsAffected > 0; // Trả về true nếu insert thành công
@@ -23,12 +25,14 @@ public class FileService {
         }
     }
 
-    public static boolean deleteFile(String name, String filePath, String username) {
-        String sql = "DELETE FROM files WHERE name = ? AND file_path = ? AND user_id = 1";
+    public static boolean deleteFile(String name, String filePath, String username) throws SQLException {
+        int userId = UserService.getUserId(username);
+        String sql = "DELETE FROM files WHERE name = ? AND file_path = ? AND user_id = ?";
         try (Connection conn = DatabaseManager.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setString(1, name);
             pstmt.setString(2, filePath);
+            pstmt.setInt(3, userId);
 
             pstmt.executeUpdate();
 

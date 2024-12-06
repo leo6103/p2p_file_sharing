@@ -4,9 +4,27 @@ import hust.networkprogramming.server_app.db.DatabaseManager;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class UserService {
+    public static int getUserId(String username) throws SQLException {
+        String userIdSQL = "SELECT id FROM users WHERE username = ?";
+        try (Connection connection = DatabaseManager.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(userIdSQL)) {
+            preparedStatement.setString(1, username);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            if (resultSet.next()) {
+                return resultSet.getInt("id");
+            }
+            throw new SQLException("User not found: " + username);
+        } catch (SQLException e) {
+            System.out.println("Error fetching user ID for username: " + username);
+            e.printStackTrace();
+            throw e;
+        }
+    }
+
     public static void updateUserIpAndPort(String username, String ip, int port) {
         String updateSql = "UPDATE users SET ip = ?, port = ? WHERE username = ?";
 
