@@ -15,8 +15,6 @@ public final class RequestMapper {
         RequestMessage requestMessage = new RequestMessage(message);
         String action = requestMessage.getAction();
         JsonObject data = requestMessage.getData();
-        System.out.println("action: " + action);
-        System.out.println("data: " + data);
 
         switch (action) {
             case RequestMessage.LOGIN:
@@ -26,7 +24,6 @@ public final class RequestMapper {
                 SignupController.signup(socket, data);
                 break;
             case RequestMessage.BROWSE:
-                System.out.println("BROWSE");
                 if (!SessionService.isSessionExpired(socket, data)) {
                     BrowseController.browse(socket, data);
                 }
@@ -37,9 +34,7 @@ public final class RequestMapper {
                 }
                 break;
             case RequestMessage.REPORT_ERROR:
-                if (!SessionService.isSessionExpired(socket, data)) {
-                    PublishController.cancel(socket, data);
-                }
+                ReportErrorController.reportError(socket, data);
                 break;
             case RequestMessage.CANCEL_PUBLISH:
                 if (!SessionService.isSessionExpired(socket, data)) {

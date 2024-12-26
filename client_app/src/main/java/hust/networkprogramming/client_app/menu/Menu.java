@@ -37,7 +37,7 @@ public class Menu {
             System.out.println("3. Browse");
             System.out.println("4. Publish");
             System.out.println("5. Cancel publish");
-            System.out.println("6. Report Error");
+            System.out.println("6. Report Error (Used in Download file)");
             System.out.println("7. Download file");
 
             System.out.println("Choose an option: ");
@@ -61,7 +61,6 @@ public class Menu {
                         PublishRequest.cancel(socket);
                         break;
                     case 6:
-                        ReportErrorRequest.reportError(socket);
                         break;
                     case 7:
                         // From peer

@@ -32,7 +32,13 @@ public class ResponseMessage extends Message {
     public static final int DOWNLOAD_FILE_FOUND_CODE = 600;
     public static final String DOWNLOAD_FILE_FOUND_MESSAGE = "File found, please download";
     public static final int DOWNLOAD_FILE_NOT_FOUND_CODE = 601;
-    public static final String DOWNLOAD_FILE_NOT_FOUND_MESSAGE = "File not found";
+    public static final String DOWNLOAD_FILE_NOT_FOUND_MESSAGE = "File not found, server will remove file path";
+
+
+    public static final int REPORT_ERROR_SUCCESS_CODE = 700;
+    public static final String REPORT_ERROR_SUCCESS_MESSAGE = "Report error successfully, file path has been removed";
+    public static final int REPORT_ERROR_FAIL_CODE = 701;
+    public static final String REPORT_ERROR_FAIL_MESSAGE = "Report error failed, file path not found in server anymore";
 
     protected int result;
     protected String message;
@@ -108,6 +114,8 @@ public class ResponseMessage extends Message {
             case CANCEL_PUBLISH_SUCCESS_CODE -> CANCEL_PUBLISH_SUCCESS_MESSAGE;
             case DOWNLOAD_FILE_FOUND_CODE -> DOWNLOAD_FILE_FOUND_MESSAGE;
             case DOWNLOAD_FILE_NOT_FOUND_CODE -> DOWNLOAD_FILE_NOT_FOUND_MESSAGE;
+            case REPORT_ERROR_SUCCESS_CODE -> REPORT_ERROR_SUCCESS_MESSAGE;
+            case REPORT_ERROR_FAIL_CODE -> REPORT_ERROR_FAIL_MESSAGE;
 
             default -> "Unkown message";
         };

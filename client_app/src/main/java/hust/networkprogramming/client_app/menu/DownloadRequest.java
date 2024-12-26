@@ -38,19 +38,22 @@ public class DownloadRequest {
             SocketHandler.sendMessage(socket, requestMessage.toString());
 
             String rawResponse = SocketHandler.receiveMessage(socket);
-            System.out.println("rawResponse: " + rawResponse);
             ResponseMessage responseMessage = new ResponseMessage(rawResponse);
+            String filepath = responseMessage.getData().get("filepath").getAsString();
             int result = responseMessage.getResult();
 
             if (result == ResponseMessage.DOWNLOAD_FILE_FOUND_CODE) {
                 long filesize = responseMessage.getData().get("filesize").getAsLong();
-                String filepath = responseMessage.getData().get("filepath").getAsString();
 
                 String filename = new File(filepath).getName();
 
                 downloadFile(socket, filesize, downloadFolder, filename);
             } else {
-                System.out.println("File not found");
+                // Noti error, and let destination remove
+//                String username = responseMessage.getData().get("username").getAsString();
+//                Socket serverSocket = new Socket(Menu.SERVER_HOST, Menu.SERVER_PORT);
+//                ReportErrorRequest.reportError(serverSocket, filepath, username);
+                System.out.println(responseMessage.getMessage());
             }
 
         } catch (IOException e) {
@@ -74,7 +77,6 @@ public class DownloadRequest {
         return folderPath;
     }
 
-    // Method to handle file downloading with progress bar
     public static void downloadFile(Socket socket, long filesize, String downloadFolder, String filename) throws IOException {
         File outputFile = new File(downloadFolder, filename);
         try (BufferedOutputStream fileOutputStream = new BufferedOutputStream(new FileOutputStream(outputFile));

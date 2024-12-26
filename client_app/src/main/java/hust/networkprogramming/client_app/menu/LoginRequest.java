@@ -36,7 +36,6 @@ public final class LoginRequest {
         if (result == ResponseMessage.LOGIN_SUCCESS_CODE) {
             Menu.setCookie(responseMessage.getData().get("cookie").getAsString());
             Menu.setUsername(username);
-            System.out.println(responseMessage.getData().get("cookie").getAsString());
         }
     }
 }

@@ -1,9 +1,13 @@
 package hust.networkprogramming.client_app.download_server;
 
 import com.google.gson.JsonObject;
+import hust.networkprogramming.client_app.menu.Menu;
+import hust.networkprogramming.client_app.menu.PublishRequest;
+import hust.networkprogramming.client_app.menu.ReportErrorRequest;
 import hust.networkprogramming.shared_utils.message.RequestMessage;
 import hust.networkprogramming.shared_utils.message.ResponseMessage;
 import hust.networkprogramming.shared_utils.net.SocketHandler;
+import hust.networkprogramming.shared_utils.logger.LoggerUtil;
 
 import java.io.*;
 import java.net.ServerSocket;
@@ -40,14 +44,15 @@ public class DownloadServer {
     }
 
     public void start() {
-        try (ServerSocket serverSocket = new ServerSocket(this.port)) {
+        try (ServerSocket serverSocket = new ServerSocket(0)) {
+            this.port = serverSocket.getLocalPort();
             System.out.println("Downloading server is running on port " + this.port);
             String currentDirectory = System.getProperty("user.dir");
             System.out.println("Current directory: " + currentDirectory);
 
             while (true) {
                 Socket socket = serverSocket.accept();
-                System.out.println("New peer connected");
+                LoggerUtil.info("New peer connected");
 
                 executor.submit(() -> {
                    try {
@@ -57,15 +62,16 @@ public class DownloadServer {
                    } finally {
                        try {
                            socket.close();
-                           System.out.println("Connection with client closed.");
+                           LoggerUtil.info("Connection with peer closed.");
                        } catch (IOException e) {
-                           System.err.println("Error closing client socket: " + e.getMessage());
+                           LoggerUtil.info("Error closing client socket: " + e.getMessage());
                        }
                    }
                 });
             }
         } catch (IOException e) {
             System.err.println("Server error: " + e.getMessage());
+            LoggerUtil.info("Server error: " + e.getMessage());
         } finally {
             executor.shutdown();
         }
@@ -88,28 +94,33 @@ public class DownloadServer {
 
     private void firstRequest(Socket socket, JsonObject data) throws IOException {
         String filepath = data.get("filepath").getAsString();
-
         File file = new File(filepath);
 
+        JsonObject metadata = new JsonObject();
+        metadata.addProperty("filepath", filepath);
 
         ResponseMessage responseMessage;
         if (file.exists()) {
-            System.out.println("exist");
-            JsonObject metadata = new JsonObject();
-            metadata.addProperty("filepath", filepath);
-            metadata.addProperty("filesize", file.length());
-
+            System.out.println("File exists.");
+            metadata.addProperty("filesize", file.length()); // Only add filesize if file exists
             responseMessage = new ResponseMessage(ResponseMessage.DOWNLOAD_FILE_FOUND_CODE, metadata);
             SocketHandler.sendMessage(socket, responseMessage.toString());
-
             sendFile(socket, data);
+        } else {
+            System.out.println("File does not exist.");
+            metadata.addProperty("username", Menu.getUsername());
 
-            return;
+            Socket serverSocket = new Socket(Menu.SERVER_HOST, Menu.SERVER_PORT);
+            ReportErrorRequest.reportError(serverSocket, filepath, Menu.getUsername());
+
+            ResponseMessage serverResponseMessage = new ResponseMessage(SocketHandler.receiveMessage(socket));
+            System.out.println(serverResponseMessage.getMessage());
+
+            responseMessage = new ResponseMessage(ResponseMessage.DOWNLOAD_FILE_NOT_FOUND_CODE, metadata);
+            SocketHandler.sendMessage(socket, responseMessage.toString());
         }
-
-        responseMessage = new ResponseMessage(ResponseMessage.DOWNLOAD_FILE_NOT_FOUND_CODE);
-        SocketHandler.sendMessage(socket, responseMessage.toString());
     }
+
 
     private void sendFile(Socket socket, JsonObject data) throws IOException {
         String filepath = data.get("filepath").getAsString();

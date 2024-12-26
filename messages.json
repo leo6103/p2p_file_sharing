@@ -118,6 +118,27 @@
     {
         "result": 601,
         "message": "File path not found"
+    },
+
+
+
+    {
+        "action": "download",
+        "data": {
+            "filepath": "/home/leo/Documents/anhthe.jpg"
+        }
+    },
+    {
+        "result": 701,
+        "data": {
+            "filepath": "/home/leo/Documents/anhthe.jpg",
+            "filesize": 7124682
+        },
+        "message": "File found"
+    },
+    {
+        "result": 702,
+        "message": "File not found!"
     }
 
 

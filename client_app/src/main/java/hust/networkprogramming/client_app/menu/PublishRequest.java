@@ -32,7 +32,9 @@ public final class PublishRequest {
                 SocketHandler.sendMessage(socket, requestMessage.toString());
 
                 String rawResponse = SocketHandler.receiveMessage(socket);
-                System.out.println(rawResponse);
+                ResponseMessage responseMessage = new ResponseMessage(rawResponse);
+                String message = responseMessage.getMessage();
+                System.out.println(message);
                 break;
             } else {
                 System.out.println("File does not exist. Please enter a valid file path.");
@@ -62,7 +64,9 @@ public final class PublishRequest {
                 SocketHandler.sendMessage(socket, requestMessage.toString());
 
                 String rawResponse = SocketHandler.receiveMessage(socket);
-                System.out.println(rawResponse);
+                ResponseMessage responseMessage = new ResponseMessage(rawResponse);
+                String message = responseMessage.getMessage();
+                System.out.println(message);
                 break;
             } else {
                 System.out.println("File does not exist. Please enter a valid file path.");
