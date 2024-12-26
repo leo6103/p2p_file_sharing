@@ -113,9 +113,6 @@ public class DownloadServer {
             Socket serverSocket = new Socket(Menu.SERVER_HOST, Menu.SERVER_PORT);
             ReportErrorRequest.reportError(serverSocket, filepath, Menu.getUsername());
 
-            ResponseMessage serverResponseMessage = new ResponseMessage(SocketHandler.receiveMessage(socket));
-            System.out.println(serverResponseMessage.getMessage());
-
             responseMessage = new ResponseMessage(ResponseMessage.DOWNLOAD_FILE_NOT_FOUND_CODE, metadata);
             SocketHandler.sendMessage(socket, responseMessage.toString());
         }

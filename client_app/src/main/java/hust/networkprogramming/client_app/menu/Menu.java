@@ -5,8 +5,8 @@ import java.net.Socket;
 import java.util.Scanner;
 
 public class Menu {
-    public static final String SERVER_HOST = "localhost";
-    public static final int SERVER_PORT = 12345;
+    public static String SERVER_HOST;
+    public static int SERVER_PORT;
 
     private static String cookie = "";
     private static String username = "";
@@ -30,6 +30,13 @@ public class Menu {
     public static void show() throws IOException {
         Scanner scanner = new Scanner(System.in);
 
+        System.out.print("Enter server host: ");
+        SERVER_HOST = scanner.nextLine();
+
+        System.out.print("Enter server port: ");
+        SERVER_PORT = scanner.nextInt();
+        scanner.nextLine(); // Consume newline
+
         while (true) {
             System.out.println("\n--- Main menu ---");
             System.out.println("1. Signup");
@@ -40,7 +47,7 @@ public class Menu {
             System.out.println("6. Report Error (Used in Download file)");
             System.out.println("7. Download file");
 
-            System.out.println("Choose an option: ");
+            System.out.print("Choose an option: ");
             int option = scanner.nextInt();
 
             try (Socket socket = new Socket(SERVER_HOST, SERVER_PORT)) {
@@ -70,7 +77,7 @@ public class Menu {
                         LoginRequest.login(socket);
                 }
             } catch (IOException e) {
-                System.out.println("Can not connect to server");
+                System.out.println("Cannot connect to server");
             }
         }
     }
